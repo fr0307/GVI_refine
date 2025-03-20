@@ -1,0 +1,20 @@
+.idea
+qwen-coder-7b.txt
+qwen-coder.txt
+generation/__pycache__
+generation/origin_data_devign
+generation/output_data_devign
+
+
+generation/refine/__pycache__
+generation/refine/temp_code.c
+
+# 忽略 generation/refine/raw_code/ 下的所有文件和文件夹
+generation/refine/raw_code/*
+
+# 但保留 run_static_check.bat 和 Static Check Commands.txt
+!generation/refine/raw_code/run_static_check.bat
+!generation/refine/raw_code/Static Check Commands.txt
+
+# 还需要确保目录被跟踪（否则上面的 ! 规则不会生效）
+!generation/refine/raw_code/

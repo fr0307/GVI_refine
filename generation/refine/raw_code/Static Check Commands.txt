@@ -1,0 +1,4 @@
+cppcheck --enable=all  --xml ./original --output-file=cppcheck-original.xml
+cppcheck --enable=all  --xml ./refined --output-file=cppcheck-refined.xml
+flawfinder -m 0 --csv ./original > flawfinder-original.csv
+flawfinder -m 0 --csv ./refined > flawfinder-refined.csv
