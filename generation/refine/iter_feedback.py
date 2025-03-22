@@ -57,7 +57,7 @@ def feedback(code, vul_type, index, iteration):
     else:
         vul_judge = True
 
-        for improvement_prompt in prompts.quality_improvement_prompts:
+        for improvement_prompt in prompts.quality_feedback_prompts:
             conversation.predict(input=improvement_prompt.format(step=step))
             step += 1
 
@@ -68,5 +68,5 @@ def feedback(code, vul_type, index, iteration):
         f.write(memory.buffer_as_str)
 
     last_answer = memory.chat_memory.messages[-1].content
-    memory.clear()
-    return last_answer, vul_judge
+    # memory.clear()
+    return last_answer, vul_judge, memory, step

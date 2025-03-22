@@ -37,7 +37,12 @@ def get_output_path(index, file_name):
 
 
 def gen():
-    with open(origin_data, 'r') as f:
+    # with open(origin_data, 'r') as f:
+    #     data = json.load(f)
+    #     # data = [x for x in data if 400 < len(x['code']) <= 800]
+    #     print(len(data))
+
+    with open(origin_vul_data, 'r') as f:
         data = json.load(f)
         # data = [x for x in data if 400 < len(x['code']) <= 800]
         print(len(data))

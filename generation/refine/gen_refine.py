@@ -48,7 +48,7 @@ def self_refine(start_index=None, end_index=None):
 
         judge_key = False  # 为True时代表已经refine一次，不再进行重新生成，而是再次判断是否有对应漏洞
         for iteration in range(MAX_ITER_NUM):
-            feedback_content, vul_judge = feedback(code, vul_type, index, iteration)
+            feedback_content, vul_judge, memory, step = feedback(code, vul_type, index, iteration)
 
             # if doesn't contain vulnerability, recall GVI / inject
             if not vul_judge:
@@ -74,7 +74,8 @@ def self_refine(start_index=None, end_index=None):
                     break
 
                 judge_key = True
-                code = refine(code, feedback_content, index, iteration)
+                code = refine(code, index, iteration, memory, step)
+                memory.clear()
 
 
 if __name__ == "__main__":

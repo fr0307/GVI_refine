@@ -23,3 +23,10 @@
 # feedback_prompt = "Base on the former Steps, summarize your feedback in how to refine the provided code to make the existing vulnerabilities more complex. "\
 #     "Specifically, if you think the provided code does not need further improvement, simply respond with `I think the code is already perfect.`. "\
 #     "Your answer should be within 125 tokens.\n\n"
+
+# refine_system = "I am building a dataset of vulnerable functions. You are an assistant, and yout need to help me refine the provided function, make it a high-quality sample of vulnerable function. Please use all your background knowledge to help me.\n\n"
+#
+# refine_prompt = "I've recieved some feedbacks about the provided function below, please help me refine the function based on that feedback to improve its quality in the target areas given below." \
+#                 " Please provide the complete function after refine in the following format: ```c //(function after refine) ```." \
+#                 " Remember we are building a high-quality vulnerable function sample. Therefore, do not try to fix any vulnerabilities in the given function. Additionally, do not add extra functions into existing code." \
+#                 "\n[function]\n```c\n{code}\n```\n[feedback]\n{feedback}\n[target areas]\n{areas}\n"

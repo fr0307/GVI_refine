@@ -14,34 +14,42 @@ judge_prompts = ["Step 1: explain the given function. Please read and understand
             "\n[vulnerability type descriptions]\n{type}\n\n"
 ]
 
-
-factor_explanations = [
-    "'Complexity' refers specifically to how intricate or convoluted the parts containing vulnerabilities are, rather than the overall complexity of the entire code snippet.",
-    "'Completeness' means that the function includes all its original content without omitting any parts using ellipses or other similar methods.",
-    "'Relevance' the degree of association between the function content and its primary task.",
-    "'Domain-Specificity' refers to the degree to which the function is tailored to a particular domain or application context."
-    "'Single-Function Enclosure' refers to the extent to which all logic is encapsulated within a single function. While function calls are allowed within this function, no additional function definitions (i.e., function bodies) should appear in the code. Additionally, global variables and macro definitions (e.g., #define) should be avoided unless they are necessary and placed inside the function."
-]
-
-quality_improvement_prompts = [
-    "Step {step}: Assess Complexity. Here, 'Complexity' refers specifically to how intricate or convoluted the parts containing vulnerabilities are, rather than the overall complexity of the entire code snippet. You can evaluate complexity based on:\n1-The number of lines\n2-Cyclomatic complexity\n3-Other reasonable metrics\nPlease review the given function and provide your assessment of the complexity of the vulnerable parts. Your answer should be within 100 tokens.\n\n",
+quality_feedback_prompts = [
+    "Step {step}: Assess Complexity. Here, 'Complexity' refers to how intricate or convoluted the vulnerable parts are. A higher score means the vulnerable code is deeply embedded within complex logic (e.g., multiple layers of indirection, nested structures, or intertwined control flows), making it harder to analyze but still exploitable. The goal is to assess how much additional complexity surrounds the vulnerable logic, not the overall function size. You can evaluate complexity based on:\n1-The number of lines\n2-Cyclomatic complexity\n3-Other reasonable metrics\nPlease review the given function and provide your assessment of the complexity of the vulnerable parts. Your answer should be within 100 tokens.\n\n",
     "Step {step}: Assess Completeness. Here 'Completeness' means that the function includes all its original content without omitting any parts using ellipses or other similar methods. Please review the given function and provide your assessment of its completeness. Your answer should be within 100 tokens.\n\n",
     "Step {step}: Assess Relevance. Here 'Relevance' means the degree of association between the function content and its primary task. You may evaluate relevance based on:\n1-The number of lines of code unrelated to task\n2-Percentage of code related to task\n3-Other reasonable metrics.\nPlease review the given function and provide your assessment of its completeness. Your answer should be within 100 tokens.\n\n",
     "Step {step}: Assess Domain-Specificity. Here, 'Domain-Specificity' refers to the degree to which the function is tailored to a particular domain or application context. You can evaluate domain-specificity based on:\n1-The relevance of identifier names to the domain\n2-The presence of Common Weakness Enumeration (CWE) entries relevant to the domain\n3-Other reasonable metrics\nPlease review the given function and provide your assessment of its domain-specificity. Your answer should be within 100 tokens.\n\n",
     "Step {step}: Assess Single-Function Enclosure. Here, 'Single-Function Enclosure' refers to the extent to which all logic is encapsulated within a single function. While function calls are allowed within this function, no additional function definitions (i.e., function bodies) should appear in the code. Additionally, global variables and macro definitions (e.g., #define) should be avoided unless they are necessary and placed inside the function. You can evaluate single-function enclosure based on:\n1-Whether the code contains more than one function body\n2-Whether the code contains global variables or macro definitions (e.g., #define) outside the function.\n3-Other reasonable metrics.\nPlease review the given function and provide your assessment of its single-function enclosure. Your answer should be within 100 tokens.\n\n"
 ]
 
-feedback_prompt = "Step {step}: Summarize and Provide Feedback. Based on your assessments in Steps 3-6, summarize the evaluations you have made and provide feedback on how to refine the provided code to improve its quality in the areas assessed. "\
-    "Specifically, if you believe the provided function already performs well in these areas, simply respond with `I think the code does not need improvement.`. "\
-    "Note that we are building a single high-quality vulnerable function sample. Therefore, do not try to fix any vulnerabilities in the given function. Additionally, do not add extra functions into existing code." \
+factor_explanations = [
+    "'Complexity' refers to how intricate or convoluted the vulnerable parts are. A higher score means the vulnerable code is deeply embedded within complex logic (e.g., multiple layers of indirection, nested structures, or intertwined control flows), making it harder to analyze but still exploitable. The goal is to assess how much additional complexity surrounds the vulnerable logic, not the overall function size.",
+    "'Completeness' means that the function includes all its original content without omitting any parts using ellipses or other similar methods.",
+    "'Relevance' refers to the degree of association between the function content and its primary task.",
+    "'Domain-Specificity' refers to the degree to which the function is tailored to a particular domain or application context."
+    "'Single-Function Enclosure' refers to the extent to which all logic is encapsulated within a single function. While function calls are allowed within this function, no additional function definitions (i.e., function bodies) should appear in the code. Additionally, global variables and macro definitions (e.g., #define) should be avoided unless they are necessary and placed inside the function."
+]
+
+quality_refine_prompts = [
+    "To enhance complexity, consider:\n1-Introducing additional layers of logic (e.g., nested conditions, loops) around the vulnerable code\n2-Obfuscating the vulnerable behavior by spreading it across multiple code constructs while keeping it within a single function\n3-Introduce error checks that are insufficient or incomplete, or error handling that inadvertently introduces new vulnerabilities. Ensure that existing vulnerabilities are preserved\n4-Other reasonable techniques\nPlease suggest improvements to increase the complexity of the vulnerable parts while ensuring they remain exploitable.",
+    "To enhance completeness, consider:\n1-Restoring omitted sections while keeping the function vulnerable\n2-Other reasonable techniques\nPlease suggest improvements to ensure the function is fully complete while keeping it vulnerable.",
+    "To improve relevance, consider:\n1-Removing lines of code unrelated to the function’s main task\n2-Expand the function's main logic to include more in-depth handling of its primary task\n3-Add relevant, deeper processing steps that directly support the function's main objective\n4-Other reasonable techniques\nPlease suggest improvements to enhance the relevance of the function while keeping it vulnerable. Also, ensure that all added logic is directly related to the function's core purpose.",
+    "To improve domain specificity, consider:\n1-Replacing existing generic identifiers(ie. function names, variables) with domain-specific ones\n2-Injecting CWE-relevant vulnerabilities that are closely related to the domain. For example, if the domain is web development, consider injecting CWEs related to SQL injection or cross-site scripting (XSS) into existing function\n3-Other reasonable techniques\nPlease suggest improvements to make the function more domain-specific while preserving its vulnerabilities.",
+    "To enhance single-function enclosure, consider:\n1-Refactoring external function definitions into inline logic\n2-Eliminating unnecessary global variables or macros by moving them inside the function\n3-Other reasonable techniques\nPlease suggest improvements to ensure the function follows single-function enclosure principles while keeping it vulnerable."
+]
+
+feedback_prompt = "Step {step}: Summarize and Provide Feedback. Based on your understanding and assessments of the function in Steps above, summarize the evaluations you have made and provide feedback on how to refine the provided code to improve its quality in the areas assessed."\
+    " Specifically, if you believe the provided function already performs well in these areas, or you cannot find ways to improve the function, simply respond with `I think the code does not need improvement.`."\
+    "\nNote:\n1-We are building a high-quality vulnerable function sample. Therefore, do not fix any vulnerabilities in the given function.\n2-Focus on improving the existing function. Do not add extra functions into the existing code.\n3-There is no need to add comments as part of the refinement.\n" \
     "Your answer should be within 150 tokens.\n\n"
 
-refine_system = "I am building a dataset of vulnerable functions. You are an assistant, and yout need to help me refine the provided function, make it a high-quality sample of vulnerable function. Please use all your background knowledge to help me.\n\n"
+refine_system = "I am building a dataset of vulnerable functions. You are an assistant tasked with helping me refine the provided function. Your goal is to improve it based on the given aspects while preserving any existing vulnerabilities. Please use your expertise and background knowledge to assist me in this process.\n\n"
 
-refine_prompt = "I've recieved some feedbacks about the provided function below, please help me refine the function based on that feedback to improve its quality in the target areas given below." \
+refine_prompt = "Step {step}: Refine the Function. Based on the feedback provided in the previous conversation, help me refine the function to improve its quality in the target areas mentioned. The definitions of these target areas can be found in the assessment part of our conversation above." \
+                " Below you will be given some possible methods to improve the function quality in the target areas. You may refer to these suggestions or use your own reasonable methods."\
                 " Please provide the complete function after refine in the following format: ```c //(function after refine) ```." \
-                " Remember we are building a high-quality vulnerable function sample. Therefore, do not try to fix any vulnerabilities in the given function. Additionally, do not add extra functions into existing code." \
-                "\n[function]\n```c\n{code}\n```\n[feedback]\n{feedback}\n[target areas]\n{areas}\n"
+                "\nNote:\n1-We are building a high-quality vulnerable function sample. Therefore, do not fix any vulnerabilities in the given function.\n2-Focus on improving the existing function. Do not add extra functions into the existing code.\n3-There is no need to add comments as part of the refinement.\n" \
+                "\n[function]\n```c\n{code}\n```\n[possible methods]\n{methods}\n"
 
 inject_system = "I am building a dataset of vulnerable functions. Your task is to assist me in creating high-quality vulnerable function samples by injecting specific types of vulnerabilities into the provided functions. The goal is to introduce vulnerabilities rather than fix existing ones. Additionally, do not add extra functions into existing code. Please use your expertise and background knowledge to help me in this process.\n\n"
 
