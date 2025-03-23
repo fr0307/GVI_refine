@@ -38,9 +38,9 @@ def refine(code, index, iteration, memory, step):
     conversation = ConversationChain(memory=memory, prompt=prompt, llm=chat, verbose=False)
 
     # target_areas = "\n".join(prompts.factor_explanations)
-    possible_methods = "\n".join(prompts.quality_refine_prompts)
+    # possible_methods = "\n".join(prompts.quality_refine_prompts)
     step += 1
-    conversation.predict(input=prompts.refine_prompt.format(step=step, code=code, methods=possible_methods))
+    conversation.predict(input=prompts.refine_prompt.format(step=step, code=code))
 
     refine_file_path = get_output_path(gen_refine_output_root, index, f"{index}_iter{iteration}.c")
     with open(refine_file_path, 'w', encoding="utf-8") as f:
@@ -53,9 +53,9 @@ def refine(code, index, iteration, memory, step):
     matches = re.findall(code_reg, last_answer, re.DOTALL)
     refined_code = matches[-1]
 
-    final_file_path = get_output_path(gen_final_output_root, index, f"{index}.c")
-    with open(final_file_path, 'w', encoding="utf-8") as f:
-        f.write(refined_code)
+    # final_file_path = get_output_path(gen_final_output_root, index, f"{index}.c")
+    # with open(final_file_path, 'w', encoding="utf-8") as f:
+    #     f.write(refined_code)
 
     return refined_code
 

@@ -7,6 +7,7 @@ gen_feedback_root = cur_gen_output_root + '_feedback'
 gen_refine_output_root = cur_gen_output_root + '_refine'
 gen_final_output_root = cur_gen_output_root + '_final'
 gen_extracted_output_root = cur_gen_output_root + '_extracted'
+gen_discarded_output_root = cur_gen_output_root + '_discarded'
 
 collected_raw_code_root = 'raw_code'
 collected_original_raw_code_root = collected_raw_code_root + '/original'

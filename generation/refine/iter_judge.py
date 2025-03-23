@@ -23,7 +23,7 @@ def get_output_path(index, file_name):
     return output_path
 
 
-def feedback(index, iteration, memory, step):
+def judge_vulnerable(code, vul_type, index, iteration):
     chat = ChatOpenAI(
         model_name=MODEL,
         streaming=True,
@@ -36,20 +36,29 @@ def feedback(index, iteration, memory, step):
         MessagesPlaceholder(variable_name="history"),
         HumanMessagePromptTemplate.from_template("{input}")
     ])
-
+    memory = ConversationBufferMemory(memory_key="history", return_messages=True)
     conversation = ConversationChain(memory=memory, prompt=prompt, llm=chat, verbose=False)
 
-    for improvement_prompt in prompts.quality_feedback_prompts:
-        conversation.predict(input=improvement_prompt.format(step=step))
-        step += 1
+    # for judge_prompt in prompts.judge_prompts:
+    #     conversation.predict(input=judge_prompt.format(code=code, type=vul_type))
+    # last_answer = memory.chat_memory.messages[-1].content
+    # step = 3
+    #
+    # if re.search(judge_reg, last_answer):
 
-    possible_methods = "\n".join(prompts.quality_refine_prompts)
-    conversation.predict(input=prompts.feedback_prompt.format(step=step, methods=possible_methods))
+    conversation.predict(input=prompts.judge_prompts[0].format(code=code))
+    vul_num = multi_tool_analysis(code)
+    step = 2
+
+    if vul_num <= 0:
+
+        vul_judge = False
+
+    else:
+        vul_judge = True
 
     file_path = get_output_path(index, f"{index}_iter{iteration}.c")
     with open(file_path, 'w', encoding="utf-8") as f:
         f.write(memory.buffer_as_str)
 
-    last_answer = memory.chat_memory.messages[-1].content
-    # memory.clear()
-    return last_answer, memory, step
+    return vul_judge, memory, step

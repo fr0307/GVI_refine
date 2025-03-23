@@ -39,24 +39,24 @@ quality_refine_prompts = [
 ]
 
 feedback_prompt = "Step {step}: Summarize and Provide Feedback. Based on your understanding and assessments of the function in Steps above, summarize the evaluations you have made and provide feedback on how to refine the provided code to improve its quality in the areas assessed."\
+    " Below you will be given some possible methods to improve the function quality in the target areas. You may refer to these suggestions to build your feedback or use your own reasonable methods."\
     " Specifically, if you believe the provided function already performs well in these areas, or you cannot find ways to improve the function, simply respond with `I think the code does not need improvement.`."\
-    "\nNote:\n1-We are building a high-quality vulnerable function sample. Therefore, do not fix any vulnerabilities in the given function.\n2-Focus on improving the existing function. Do not add extra functions into the existing code.\n3-There is no need to add comments as part of the refinement.\n" \
-    "Your answer should be within 150 tokens.\n\n"
+    "\nNote:\n1-We are building a high-quality vulnerable function sample. Therefore, do not fix any vulnerabilities in the given function. Instead, you are welcome to introduce new vulnerabilities that are relevant to the function's domain and enhance its realism.\n2-Focus on improving the existing function. Do not add extra functions into the existing code.\n3-There is no need to add comments as part of the refinement.\n" \
+    "Your answer should be within 150 tokens.\n"\
+    "\n[possible methods]\n{methods}\n"
 
 refine_system = "I am building a dataset of vulnerable functions. You are an assistant tasked with helping me refine the provided function. Your goal is to improve it based on the given aspects while preserving any existing vulnerabilities. Please use your expertise and background knowledge to assist me in this process.\n\n"
 
 refine_prompt = "Step {step}: Refine the Function. Based on the feedback provided in the previous conversation, help me refine the function to improve its quality in the target areas mentioned. The definitions of these target areas can be found in the assessment part of our conversation above." \
-                " Below you will be given some possible methods to improve the function quality in the target areas. You may refer to these suggestions or use your own reasonable methods."\
+                " In the feedback step above you were provided with some possible methods to improve the function quality in the target areas. You may refer to these suggestions or use your own reasonable methods."\
                 " Please provide the complete function after refine in the following format: ```c //(function after refine) ```." \
-                "\nNote:\n1-We are building a high-quality vulnerable function sample. Therefore, do not fix any vulnerabilities in the given function.\n2-Focus on improving the existing function. Do not add extra functions into the existing code.\n3-There is no need to add comments as part of the refinement.\n" \
-                "\n[function]\n```c\n{code}\n```\n[possible methods]\n{methods}\n"
+                "\nNote:\n1-We are building a high-quality vulnerable function sample. Therefore, do not fix any vulnerabilities in the given function. Instead, you are welcome to introduce new vulnerabilities that are relevant to the function's domain and enhance its realism.\n2-Focus on improving the existing function. Do not add extra functions into the existing code.\n3-There is no need to add comments as part of the refinement.\n" \
+                "\n[function]\n```c\n{code}\n```\n"
 
 inject_system = "I am building a dataset of vulnerable functions. Your task is to assist me in creating high-quality vulnerable function samples by injecting specific types of vulnerabilities into the provided functions. The goal is to introduce vulnerabilities rather than fix existing ones. Additionally, do not add extra functions into existing code. Please use your expertise and background knowledge to help me in this process.\n\n"
 
 inject_prompts = [
-    "Step 1: explain the given function. Please read and understand the function provided below, then summarize its meaning and functionality. Your answer should be within 100 tokens."
-    "\n[function]\n```c\n{code}\n```",
-    "Step 2: inject vulnerabilities. The given code lacks certain types of vulnerabilities. You will be provided with descriptions of these vulnerabilities. "
+    "Step {step}: inject vulnerabilities. The given code lacks certain types of vulnerabilities. You will be provided with descriptions of these vulnerabilities. "
     "Remember, your task is to inject these vulnerabilities into the function above, not to fix them. "
     "Please modify the function above to inject these vulnerabilities, making it a high-quality vulnerable function sample. "
     "You may achieve this by:\n1-Replacing existing correct parts with equivalent logic that introduces vulnerabilities.\n2-Adding new parts with vulnerabilities that relate to the existing function logic.\n3-Using other reasonable methods. "

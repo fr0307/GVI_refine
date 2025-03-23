@@ -30,3 +30,14 @@
 #                 " Please provide the complete function after refine in the following format: ```c //(function after refine) ```." \
 #                 " Remember we are building a high-quality vulnerable function sample. Therefore, do not try to fix any vulnerabilities in the given function. Additionally, do not add extra functions into existing code." \
 #                 "\n[function]\n```c\n{code}\n```\n[feedback]\n{feedback}\n[target areas]\n{areas}\n"
+
+# inject_prompts = [
+#     "Step 1: explain the given function. Please read and understand the function provided below, then summarize its meaning and functionality. Your answer should be within 100 tokens."
+#     "\n[function]\n```c\n{code}\n```",
+#     "Step 2: inject vulnerabilities. The given code lacks certain types of vulnerabilities. You will be provided with descriptions of these vulnerabilities. "
+#     "Remember, your task is to inject these vulnerabilities into the function above, not to fix them. "
+#     "Please modify the function above to inject these vulnerabilities, making it a high-quality vulnerable function sample. "
+#     "You may achieve this by:\n1-Replacing existing correct parts with equivalent logic that introduces vulnerabilities.\n2-Adding new parts with vulnerabilities that relate to the existing function logic.\n3-Using other reasonable methods. "
+#     "Please provide the complete function after injection in the following format: ```c //(function after injection) ```. Your answer should be within 125 tokens. "
+#     "\n[vulnerability type descriptions]\n{type}\n\n"
+# ]

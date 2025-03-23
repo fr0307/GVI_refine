@@ -21,7 +21,7 @@ def get_output_path(dir, index, file_name):
     return output_path
 
 
-def inject(code, vul_type, index, iteration):
+def inject(code, vul_type, index, iteration, memory, step):
     chat = ChatOpenAI(
         model_name=MODEL,
         streaming=True,
@@ -34,11 +34,13 @@ def inject(code, vul_type, index, iteration):
         MessagesPlaceholder(variable_name="history"),
         HumanMessagePromptTemplate.from_template("{input}")
     ])
-    memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+
+    # memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+
     conversation = ConversationChain(memory=memory, prompt=prompt, llm=chat, verbose=False)
 
     for inject_prompt in prompts.inject_prompts:
-        conversation.predict(input=inject_prompt.format(code=code, type=vul_type))
+        conversation.predict(input=inject_prompt.format(step=step, code=code, type=vul_type))
 
     refine_file_path = get_output_path(gen_refine_output_root, index, f"{index}_iter{iteration}.c")
     with open(refine_file_path, 'w', encoding="utf-8") as f:

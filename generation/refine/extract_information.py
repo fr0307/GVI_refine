@@ -3,7 +3,7 @@ import os
 import re
 from tqdm import tqdm
 
-from config import cur_gen_output_root, pattern_output, type_output
+from config import cur_gen_output_root, pattern_output, type_output, gen_discarded_output_root
 from generation.config import gen_combine_output, rm_comments_output
 from GVI_regen_context import re_gen_context, extract_code
 
@@ -72,6 +72,9 @@ def rm_comments():
 
 
 def extract_all():
+    if not os.path.exists(gen_discarded_output_root):
+        os.mkdir(gen_discarded_output_root)
+
     dirs = os.listdir(cur_gen_output_root)
     code_gen = []
     pattern_gen, type_gen = {}, {}
@@ -92,6 +95,13 @@ def extract_all():
 
             code_matches = extract_code(context)
             if not len(code_matches) == 4:
+                # save the old context as 'extracted'
+                discarded_file_path = os.path.join(gen_discarded_output_root, str(i), file)
+                check_output_dir(discarded_file_path)
+                with open(discarded_file_path, 'w', encoding='utf-8') as f:
+                    f.write(context)
+
+                # regen a context that fit the format
                 context = re_gen_context(i)
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(context)
