@@ -8,7 +8,7 @@ cur_rm_comments_output = '../' + rm_comments_output
 
 
 def collect_original_code():
-    with open(cur_rm_comments_output, 'r') as f:
+    with open(cur_rm_comments_output, 'r', encoding='utf-8') as f:
         data = json.load(f)
     if not os.path.exists(collected_original_raw_code_root):
         os.mkdir(collected_original_raw_code_root)
@@ -28,7 +28,7 @@ def collect_refined_code():
         for file in files:
             load_file_path = os.path.join(dir_path, file)
             save_file_path = os.path.join(collected_refined_raw_code_root, file)
-            with open(load_file_path, 'r') as f:
+            with open(load_file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             with open(save_file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
