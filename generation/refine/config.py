@@ -20,5 +20,6 @@ analyze_result_compare = collected_raw_code_root + '/analyze-compare.json'
 MAX_ITER_NUM = 3
 
 judge_reg = r"No, it doesn't contain such vulnerabilities"
-refine_end_reg = r"I think the code does not need improvement."
+early_stop_reg = r"\*\*{area} Rating\*\* 5"
+areas = ['Complexity', 'Completeness', 'Relevance', 'Domain-Specificity', 'Single-Function Enclosure']
 

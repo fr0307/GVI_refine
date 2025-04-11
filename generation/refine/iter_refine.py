@@ -21,7 +21,7 @@ def get_output_path(dir, index, file_name):
     return output_path
 
 
-def refine(code, index, iteration, memory, step):
+def refine(code, suggestion, index, iteration, step):
     chat = ChatOpenAI(
         model_name=MODEL,
         streaming=True,
@@ -34,13 +34,13 @@ def refine(code, index, iteration, memory, step):
         MessagesPlaceholder(variable_name="history"),
         HumanMessagePromptTemplate.from_template("{input}")
     ])
-    # memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+    memory = ConversationBufferMemory(memory_key="history", return_messages=True)
     conversation = ConversationChain(memory=memory, prompt=prompt, llm=chat, verbose=False)
 
-    # target_areas = "\n".join(prompts.factor_explanations)
+    target_areas = "\n".join(prompts.factor_explanations)
     # possible_methods = "\n".join(prompts.quality_refine_prompts)
     step += 1
-    conversation.predict(input=prompts.refine_prompt.format(step=step, code=code))
+    conversation.predict(input=prompts.refine_prompt.format(step=step, code=code, suggestion=suggestion, areas=target_areas))
 
     refine_file_path = get_output_path(gen_refine_output_root, index, f"{index}_iter{iteration}.c")
     with open(refine_file_path, 'w', encoding="utf-8") as f:
