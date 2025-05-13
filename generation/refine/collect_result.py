@@ -2,7 +2,7 @@ import os
 import json
 from tqdm import tqdm
 
-from config import gen_extracted_output_root, collected_original_raw_code_root, collected_refined_raw_code_root
+from config import gen_final_output_root, collected_original_raw_code_root, collected_refined_raw_code_root
 from generation.config import rm_comments_output
 cur_rm_comments_output = '../' + rm_comments_output
 
@@ -21,9 +21,9 @@ def collect_original_code():
 def collect_refined_code():
     if not os.path.exists(collected_refined_raw_code_root):
         os.mkdir(collected_refined_raw_code_root)
-    dirs = os.listdir(gen_extracted_output_root)
+    dirs = os.listdir(gen_final_output_root)
     for dir in tqdm(dirs):
-        dir_path = os.path.join(gen_extracted_output_root, dir)
+        dir_path = os.path.join(gen_final_output_root, dir)
         files = os.listdir(dir_path)
         for file in files:
             load_file_path = os.path.join(dir_path, file)

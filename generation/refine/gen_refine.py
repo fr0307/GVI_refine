@@ -58,6 +58,9 @@ def self_refine(start_index=None, end_index=None):
             feedback_content, step, early_stop_flag = feedback(code, index, iteration)
 
             if early_stop_flag:
+                final_file_path = get_output_path(gen_final_output_root, index, f"{index}.c")
+                with open(final_file_path, 'w', encoding="utf-8") as f:
+                    f.write(code)
                 break
 
             refined_code = refine(code, feedback_content, index, iteration, step)

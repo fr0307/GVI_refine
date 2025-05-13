@@ -134,12 +134,17 @@ def plot_result():
         res_original_counter = [Counter(res_original).get(value, 0) for value in range_original]
     with open(analyze_result_refined, 'r', encoding='utf-8') as f:
         res_refined = json.load(f)
-        range_refined = range(min(res_refined), max(res_refined)+1)
-        res_refined_counter = [Counter(res_refined).get(value, 0) for value in range_refined]
-    with open(analyze_result_compare, 'r', encoding='utf-8') as f:
-        res_compared = json.load(f)
-        range_compared = range(min(res_compared), max(res_compared)+1)
-        res_compared_counter = [Counter(res_compared).get(value, 0) for value in range_compared]
+        # range_refined = range(min(res_refined), max(res_refined)+1)
+        # res_refined_counter = [Counter(res_refined).get(value, 0) for value in range_refined]
+        res_refined_modified = [x if x < 20 else 20 for x in res_refined]
+        range_refined_modified = list(range(20)) + [20]
+        res_refined_counter_modified = [Counter(res_refined_modified).get(value, 0) for value in range_refined_modified]
+
+
+    # with open(analyze_result_compare, 'r', encoding='utf-8') as f:
+    #     res_compared = json.load(f)
+    #     range_compared = range(min(res_compared), max(res_compared)+1)
+    #     res_compared_counter = [Counter(res_compared).get(value, 0) for value in range_compared]
 
     plt.figure(figsize=(8, 6))
     plt.bar(range_original, res_original_counter, color='skyblue')
@@ -150,23 +155,32 @@ def plot_result():
     plt.savefig('./raw_code/bar_chart_original.png')
     plt.close()
 
+    # plt.figure(figsize=(8, 6))
+    # plt.bar(range_refined, res_refined_counter, color='red')
+    # plt.xlabel('Vulnerability Number')
+    # plt.ylabel('Count')
+    # plt.title('Bar Chart of Refined Data')
+    # plt.xticks(range_refined)
+    # plt.savefig('./raw_code/bar_chart_refined.png')
+    # plt.close()
+
     plt.figure(figsize=(8, 6))
-    plt.bar(range_refined, res_refined_counter, color='red')
+    plt.bar(range_refined_modified, res_refined_counter_modified, color='red')
     plt.xlabel('Vulnerability Number')
     plt.ylabel('Count')
     plt.title('Bar Chart of Refined Data')
-    plt.xticks(range_refined)
-    plt.savefig('./raw_code/bar_chart_refined.png')
+    plt.xticks(range_refined_modified, [str(x) for x in range(20)] + ['20+'])  # 设置横轴标签
+    plt.savefig('./raw_code/bar_chart_refined_modified.png')
     plt.close()
 
-    plt.figure(figsize=(8, 6))
-    plt.bar(range_compared, res_compared_counter, color='green')
-    plt.xlabel('Vulnerability Number')
-    plt.ylabel('Count')
-    plt.title('Bar Chart of Comparison')
-    plt.xticks(range_compared)
-    plt.savefig('./raw_code/bar_chart_compare.png')
-    plt.close()
+    # plt.figure(figsize=(8, 6))
+    # plt.bar(range_compared, res_compared_counter, color='green')
+    # plt.xlabel('Vulnerability Number')
+    # plt.ylabel('Count')
+    # plt.title('Bar Chart of Comparison')
+    # plt.xticks(range_compared)
+    # plt.savefig('./raw_code/bar_chart_compare.png')
+    # plt.close()
 
     print('plot done')
 
@@ -174,6 +188,6 @@ def plot_result():
 if __name__ == "__main__":
     analyze_original()
     file_index_list = analyze_refined()
-    analyze_compare(file_index_list)
+    # analyze_compare(file_index_list)
     plot_result()
 

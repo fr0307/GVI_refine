@@ -22,7 +22,7 @@ def extract_all_refined():
         for file in files:
             input_file_path = os.path.join(input_dir_path, file)
             output_file_path = os.path.join(output_dir_path, file)
-            with open(input_file_path, 'r') as f:
+            with open(input_file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             try:
                 extracted_function = extract_largest_function(content)
@@ -155,81 +155,6 @@ def extract_largest_function(c_code: str) -> str:
 
     # 如果 main 是唯一函数，则报错
     raise ValueError("Only 'main' function found, no other function available.")
-
-
-def test():
-    # 示例 C 代码
-    c_program = """
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct Config {
-    char option_name[256];
-    int value;
-} Config;
-
-/**
- * Parses a configuration file and returns a pointer to a Config structure.
- * The caller is responsible for freeing the allocated memory.
- *
- * @param filename The path to the configuration file to parse.
- * @return A pointer to a Config structure containing the parsed data,
- *         or NULL if an error occurred.
- */
-Config *parse_config_file(const char *filename)
-{
-    FILE *fp;
-    Config *config = NULL;
-    char line[1024];
-    
-    fp = fopen(filename, "r");
-    if (fp == NULL) {
-        perror("Error opening file");
-        return NULL;
-    }
-    
-    while (fgets(line, sizeof(line), fp)) {
-        if (strncmp(line, "option:", 7) == 0) {
-            if (config != NULL) {
-                free(config->option_name);
-            }
-            config = malloc(sizeof(Config));
-            if (config == NULL) {
-                perror("Memory allocation failed");
-                fclose(fp);
-                return NULL;
-            }
-            size_t len = strcspn(line + 8, "\n");
-            if (len >= sizeof(config->option_name)) {
-                fprintf(stderr, "Buffer overflow detected\n");
-                free(config);
-                fclose(fp);
-                return NULL;
-            }
-            strncpy(config->option_name, line + 8, len);
-            config->option_name[len] = '\0';
-            config->value = 0;
-        } else if (strncmp(line, "value:", 6) == 0 && config != NULL) {
-            int temp_value;
-            if (sscanf(line + 7, "%d", &temp_value) == 1) {
-                config->value = temp_value;
-            } else {
-                fprintf(stderr, "Invalid value format\n");
-                free(config);
-                fclose(fp);
-                return NULL;
-            }
-        }
-    }
-    
-    fclose(fp);
-    return config;
-}
-        """
-
-    # 测试
-    print(extract_largest_function(c_program))
 
 
 if __name__ == '__main__':

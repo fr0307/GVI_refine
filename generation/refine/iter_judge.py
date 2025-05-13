@@ -24,11 +24,12 @@ def get_output_path(index, file_name):
 
 
 def judge_vulnerable(code):
+    # 调用静态分析，检查当前样本中的总漏洞数
     vul_num = multi_tool_analysis(code)
 
+    # 若无漏洞返回false，否则返回true
     if vul_num <= 0:
         vul_judge = False
-
     else:
         vul_judge = True
 
